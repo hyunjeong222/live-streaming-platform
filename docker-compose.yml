@@ -1,0 +1,22 @@
+# 로컬 개발용 MySQL. 값은 .env에서 읽는다(.env.example 참고).
+# 버전은 시험(Testcontainers)과 맞추려고 여기에 고정한다. 바꿀 때는 시험의 MySQL 이미지도 같이 바꾼다.
+services:
+  mysql:
+    image: mysql:8.4
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      TZ: ${APP_TIME_ZONE:-Asia/Seoul}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    # 시험(Testcontainers)도 같은 문자셋·타임존을 쓴다. 바꿀 때는 같이 바꾼다.
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
