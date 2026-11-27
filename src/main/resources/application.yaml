@@ -1,3 +1,29 @@
 spring:
   application:
     name: live-streaming-platform
+
+  # 프로젝트 루트의 .env 파일이 있으면 읽어 온다(docker-compose와 같은 파일을 쓴다).
+  config:
+    import: optional:file:.env[.properties]
+
+  # 접속 정보는 .env(또는 환경변수)로 받는다. 비밀번호 기본값은 비워 둔다.
+  datasource:
+    url: jdbc:mysql://localhost:${MYSQL_PORT:3306}/${MYSQL_DATABASE:livestream}?serverTimezone=${APP_TIME_ZONE:Asia/Seoul}
+    username: ${MYSQL_USER:livestream}
+    password: ${MYSQL_PASSWORD:}
+
+  # 스키마는 Flyway가 관리하고, JPA는 엔티티와 스키마가 맞는지만 검사한다.
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: ${APP_TIME_ZONE:Asia/Seoul}
+
+  jackson:
+    time-zone: ${APP_TIME_ZONE:Asia/Seoul}
+
+  flyway:
+    locations: classpath:db/migration
