@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 템플릿 레포처럼 Gradle 프로젝트가 아직 없으면 시험을 건너뛴다.
+      - name: Gradle 프로젝트 확인
+        id: check
+        run: echo "exists=$([ -f gradlew ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-java@v4
+        if: steps.check.outputs.exists == 'true'
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - uses: gradle/actions/setup-gradle@v4
+        if: steps.check.outputs.exists == 'true'
+
+      # Testcontainers가 러너의 Docker로 MySQL을 띄운다.
+      - name: 시험
+        if: steps.check.outputs.exists == 'true'
+        run: ./gradlew test
