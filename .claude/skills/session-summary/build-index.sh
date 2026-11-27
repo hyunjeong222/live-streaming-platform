@@ -138,7 +138,7 @@ summary_line="총 $(wc -l < "$rows" | tr -d ' ')건. 겹침은 -c로 기준 브�
 stale="$(grep -c '정리 후보' "$rows" || true)"
 [ "$stale" -gt 0 ] && summary_line="$summary_line 정리 후보 ${stale}건."
 if [ -z "$all" ]; then
-  superseded="$(grep -rl '^status:[[:space:]]*대체됨' "$dir" --include='[0-9]*.md' 2>/dev/null | wc -l | tr -d ' ')"
+  superseded="$({ grep -rl '^status:[[:space:]]*대체됨' "$dir" --include='[0-9]*.md' 2>/dev/null || true; } | wc -l | tr -d ' ')"
   [ "$superseded" -gt 0 ] && summary_line="$summary_line 대체됨 ${superseded}건은 뺐다(-a로 포함)."
 fi
 echo "$summary_line" >&2

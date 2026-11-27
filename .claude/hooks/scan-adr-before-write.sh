@@ -20,7 +20,8 @@ fi
 file_path="$(printf '%s' "$input" | jq -r '.tool_input.file_path // empty')"
 # Windows 경로(C:\...\docs\decisions\...)도 같은 패턴으로 매칭하려고 구분자를 /로 통일한다.
 file_path="${file_path//\\//}"
-case "$file_path" in
+# Windows는 파일 이름의 대소문자를 구분하지 않으므로 소문자로 바꿔 비교한다(Docs/Decisions/x.MD도 같은 파일).
+case "$(printf '%s' "$file_path" | tr '[:upper:]' '[:lower:]')" in
   */docs/decisions/*.md | docs/decisions/*.md) ;;
   *) exit 0 ;;
 esac
