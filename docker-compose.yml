@@ -14,6 +14,7 @@ services:
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
+    # 시험(Testcontainers)도 같은 문자셋·타임존을 쓴다. 바꿀 때는 같이 바꾼다.
     volumes:
       - mysql-data:/var/lib/mysql
 
